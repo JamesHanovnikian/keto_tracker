@@ -3,7 +3,9 @@ class EdamamApi
     response = faraday_client.get("parser") do |req|
       req.params["ingr"] = ingredient
     end
-    JSON.parse(response.body)
+    data = JSON.parse(response.body)
+    @food_id = data["parsed"][0]["food"]["foodId"]
+    data
   end
 
   def nutrients
@@ -13,7 +15,7 @@ class EdamamApi
           {
             "quantity": 1,
             "measureURI": "http://www.edamam.com/ontologies/edamam.owl#Measure_gram",
-            "foodId": "food_a8hs60uayl5icia1qe8qoba1kwp8",
+            "foodId": @food_id,
           },
         ],
       }.to_json
