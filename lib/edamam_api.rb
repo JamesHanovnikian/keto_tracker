@@ -1,11 +1,6 @@
 class EdamamApi
-  def parser(ingredient)
-    response = faraday_client.get("parser") do |req|
-      req.params["ingr"] = ingredient
-    end
-    data = JSON.parse(response.body)
-    @food_id = data["parsed"][0]["food"]["foodId"]
-    data
+  def initialize(ingredient)
+    @food_id = get_food_id(ingredient)
   end
 
   def nutrients
@@ -24,6 +19,14 @@ class EdamamApi
   end
 
   private
+
+  def get_food_id(ingredient)
+    response = faraday_client.get("parser") do |req|
+      req.params["ingr"] = ingredient
+    end
+    data = JSON.parse(response.body)
+    data.dig("parsed", 0, "food", "foodId")
+  end
 
   def faraday_client
     Faraday.new(
